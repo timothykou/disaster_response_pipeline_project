@@ -5,9 +5,15 @@
 This repo contains the Disaster Response Pipeline Project for the Udacity Data Scientist Nanodegree Program course.
 
 The project sets up an ETL pipeline to read in data, clean, and save data from CSV files provided by the course.
-* These CSV files contain emergency messages categorized by need.
+* These CSV files contain emergency messages categorized by need. They are saved in the data/ folder.
+* process_data.py contains the code for the ETL pipeline.
+* Cleaned data is stored in a sqlite3: data/DisasterResponse.db. 
+
 Then, the cleaned dataset is used to train a classifier to label new messages with a category.
+* The ML pipeline that trains the classifier is stored in models/train_classifier.py. 
+
 Finally, this project deploys a web application that provides an overview of the dataset and uses the trained model to label new messages.
+* Templates and code for running the Flask app are stored in the app/ folder.
 
 Follow the below instructions to set up and run...
 
