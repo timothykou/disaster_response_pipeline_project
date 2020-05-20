@@ -16,7 +16,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.multioutput import MultiOutputClassifier
 # from sklearn.ensemble import RandomForestClassifier
 # from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, accuracy_score
 from sklearn.svm import LinearSVC
 
 
@@ -80,16 +80,35 @@ def build_model():
     return cv
 
 
-def evaluate_model(model, X_test, y_test, category_names):
+def evaluate_model(model, X_test, y_test, category_names, database_filepath):
 
+    
     # model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
     print(f'\nBest params: {model.best_params_}')
     print(f'\nBest score: {model.best_score_}')
 
+    # save accuracy values by category
+    accuracy_dict = {}
     for ix, category in enumerate(category_names):
-        print(f'\nClassification Report for {category}: {classification_report(y_test[:,ix], y_pred[:,ix])}')
+        report = classification_report(y_test[:,ix], y_pred[:,ix], output_dict=True)
+        print(report)
+        accuracy_dict[category] = report['accuracy']
+        print(f'Saving accuracy score for {category}: {report['accuracy']}')
+    
+    engine = create_engine(f'sqlite:///{database_filepath}')
+
+    accuracy_df = pd.DataFrame(accuracy_dict, index=['accuracy_score'])
+    print(accuracy_df)
+
+    df = accuracy_df.to_sql(
+        "Accuracy_Scores",
+        con=engine,
+        index=False,
+        if_exists='replace'
+    )
+    print(f'Successfully saved accuracy_df to Accuracy_Scores table at {database_filepath}')
 
 
 def save_model(model, model_filepath):
@@ -101,7 +120,7 @@ def main():
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
         X, y, category_names = load_data(database_filepath)
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.8)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
         print('Building model...')
         model = build_model() 
@@ -112,7 +131,7 @@ def main():
 
         # predict on test data
         print('Evaluating model...')
-        evaluate_model(model, X_test, y_test, category_names)
+        evaluate_model(model, X_test, y_test, category_names, database_filepath)
 
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
         save_model(model, model_filepath)
