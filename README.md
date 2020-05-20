@@ -1,5 +1,16 @@
 # Disaster Response Pipeline Project
 
+### Summary:
+
+This repo contains the Disaster Response Pipeline Project for the Udacity Data Scientist Nanodegree Program course.
+
+The project sets up an ETL pipeline to read in data, clean, and save data from CSV files provided by the course.
+* These CSV files contain emergency messages categorized by need.
+Then, the cleaned dataset is used to train a classifier to label new messages with a category.
+Finally, this project deploys a web application that provides an overview of the dataset and uses the trained model to label new messages.
+
+Follow the below instructions to set up and run...
+
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
 
