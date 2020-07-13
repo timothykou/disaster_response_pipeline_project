@@ -52,14 +52,23 @@ def clean_data(df):
 def save_data(df, database_filename):
     '''
     Saves dataframe to a sqlite3 database
+
+    Args:
+    df - pandas dataframe to be saved
+    database_filename - path where df should be saved
     '''
-    engine = create_engine(f'sqlite:///{database_filename}')
-    df.to_sql(
-        TABLE_NAME,
-        con=engine,
-        index=False,
-        if_exists='replace'
-    )
+    try:
+        engine = create_engine(f'sqlite:///{database_filename}')
+        df.to_sql(
+            TABLE_NAME,
+            con=engine,
+            index=False,
+            if_exists='replace'
+        )
+        return True
+    except:
+        return False
+
     
 
 def main():
@@ -77,7 +86,11 @@ def main():
         print(df.sum())
         
         print('Saving data...\n    DATABASE: {}'.format(database_filepath))
-        save_data(df, database_filepath)
+        
+        if save_data(df, database_filepath):
+            print(f'Data was saved to {database_filepath}')
+        else:
+            print(f'Data could not be saved to {database_filepath}')
         
         print('Cleaned data saved to database!')
     
