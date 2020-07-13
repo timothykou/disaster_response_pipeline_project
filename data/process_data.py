@@ -56,6 +56,9 @@ def save_data(df, database_filename):
     Args:
     df - pandas dataframe to be saved
     database_filename - path where df should be saved
+
+    Returns:
+    True/False - bool indicating whether this was successfully saved
     '''
     try:
         engine = create_engine(f'sqlite:///{database_filename}')
